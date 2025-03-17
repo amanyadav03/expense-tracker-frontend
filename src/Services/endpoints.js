@@ -7,7 +7,7 @@ const MS = {
 const ENDPOINTS = {
     login: 'login',
     register: 'register',
-
+    expense: 'expense',
 };
 
 export function getEndpoint(microservice, key) {

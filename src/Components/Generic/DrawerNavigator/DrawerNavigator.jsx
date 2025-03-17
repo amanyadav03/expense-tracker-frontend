@@ -8,26 +8,21 @@ import {
 import { View, Text, StyleSheet, Image, TouchableOpacity } from "react-native";
 import { useNavigation } from "@react-navigation/native";
 
-// Import your screens
 import HomeComponent from "../../Screens/Dashboard/HomeComponent";
 
-// Import icons - you'll need to install react-native-vector-icons
-// npm install react-native-vector-icons
-// Then link it: npx react-native link react-native-vector-icons
 import Icon from "react-native-vector-icons/MaterialCommunityIcons";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { removeToken } from "../../../Redux/authSlice";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import AddExpense from "../../Screens/Expense/AddExpense/AddExpense";
+import ExpenseTab from "../../Screens/Expense/ExpenseTabNavigation";
 
-// Custom drawer content component
 function CustomDrawerContent(props) {
     const dispatch = useDispatch();
   const navigation = useNavigation();
-
+  const userName = useSelector((state)=>state.auth.userName);
+  const role = useSelector((state)=>state.auth.role);
   const handleLogout = async() => {
-    // Add your logout logic here
-    // For example: clear AsyncStorage, reset state, etc.
-    // Then navigate to Login screen
     dispatch(removeToken());
     await AsyncStorage.removeItem('authToken');
   };
@@ -40,8 +35,8 @@ function CustomDrawerContent(props) {
           source={{ uri: "https://via.placeholder.com/80" }}
           style={styles.userImage}
         />
-        <Text style={styles.userName}>John Doe</Text>
-        <Text style={styles.userEmail}>john.doe@example.com</Text>
+        <Text style={styles.userName}>{userName}</Text>
+        <Text style={styles.userEmail}>{role}</Text>
         <View style={styles.balanceContainer}>
           <Text style={styles.balanceLabel}>Current Balance</Text>
           <Text style={styles.balanceAmount}>$2,450.50</Text>
@@ -82,9 +77,11 @@ const DrawerNavigation = () => {
         drawerActiveTintColor: "#2e5bff",
         drawerInactiveTintColor: "#4a5568",
         drawerLabelStyle: {
-          marginLeft: -20,
           fontSize: 16,
         },
+        drawerStyle:{
+          width:300
+        }
       }}
     >
       <Drawer.Screen
@@ -95,14 +92,14 @@ const DrawerNavigation = () => {
           drawerIcon: ({ color }) => <Icon name="view-dashboard" size={22} color={color} />,
         }}
       />
-      {/* <Drawer.Screen
+       <Drawer.Screen
         name="Expenses"
-        component={ExpensesScreen}
+        component={ExpenseTab}
         options={{
           drawerIcon: ({ color }) => <Icon name="cash-minus" size={22} color={color} />,
         }}
       />
-      <Drawer.Screen
+      {/*<Drawer.Screen
         name="Income"
         component={IncomeScreen}
         options={{
@@ -142,6 +139,7 @@ const styles = StyleSheet.create({
     padding: 20,
     backgroundColor: "#2e5bff",
     alignItems: "center",
+    paddingTop:60,
   },
   userImage: {
     width: 80,

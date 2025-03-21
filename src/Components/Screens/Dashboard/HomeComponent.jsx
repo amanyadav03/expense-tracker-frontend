@@ -159,7 +159,8 @@ const HomeComponent = ({navigation}) => {
 
       {/* Quick Actions */}
       <View style={styles.quickActions}>
-        <TouchableOpacity style={styles.actionButton}>
+        <TouchableOpacity style={styles.actionButton}
+        onPress={()=>{navigation.dispatch(CommonActions.navigate({name: 'Income'}))}}>
           <View style={[styles.actionIcon, { backgroundColor: '#E3F2FD' }]}>
             <Icon name="cash-plus" size={24} color="#2196F3" />
           </View>

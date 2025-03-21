@@ -16,6 +16,9 @@ import { removeToken } from "../../../Redux/authSlice";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import AddExpense from "../../Screens/Expense/AddExpense/AddExpense";
 import ExpenseTab from "../../Screens/Expense/ExpenseTabNavigation";
+import IncomeTab from "../../Screens/Income/IncomeTabNavigation";
+import ExpenseHistoryScreen from "../../Screens/ExpenseHistory/ExpenseHistory";
+import IncomeHistoryScreen from "../../Screens/IncomeHistory/IncomeHistory";
 
 function CustomDrawerContent(props) {
     const dispatch = useDispatch();
@@ -99,14 +102,28 @@ const DrawerNavigation = () => {
           drawerIcon: ({ color }) => <Icon name="cash-minus" size={22} color={color} />,
         }}
       />
-      {/*<Drawer.Screen
+      <Drawer.Screen
         name="Income"
-        component={IncomeScreen}
+        component={IncomeTab}
         options={{
           drawerIcon: ({ color }) => <Icon name="cash-plus" size={22} color={color} />,
         }}
       />
       <Drawer.Screen
+        name="Expense History"
+        component={ExpenseHistoryScreen}
+        options={{
+          drawerIcon: ({ color }) => <Icon name="cash-minus" size={22} color={color} />,
+        }}
+      />
+      <Drawer.Screen
+        name="Income History"
+        component={IncomeHistoryScreen}
+        options={{
+          drawerIcon: ({ color }) => <Icon name="cash-plus" size={22} color={color} />,
+        }}
+      />
+      {/*<Drawer.Screen
         name="Budget"
         component={BudgetScreen}
         options={{

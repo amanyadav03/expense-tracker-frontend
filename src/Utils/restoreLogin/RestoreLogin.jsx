@@ -17,6 +17,8 @@ const RestoreLogin =()=>{
                     userId: decoded.userId,
                     mobile: decoded.mobile,
                     role: decoded.role,
+                    monthlyBudget: decoded.monthlyBudget,
+                    name: decoded.name,
           
                   }
                 dispatch(setToken(payload));

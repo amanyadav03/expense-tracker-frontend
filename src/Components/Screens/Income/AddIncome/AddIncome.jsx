@@ -13,6 +13,8 @@ import {
 } from "react-native";
 import DateTimePicker from "@react-native-community/datetimepicker";
 import Icon from "react-native-vector-icons/MaterialCommunityIcons";
+import { addIncome } from "../../../../Services/api";
+import { useSelector } from "react-redux";
 
 const AddIncomeScreen = ({ navigation }) => {
   // States for form data
@@ -32,6 +34,7 @@ const AddIncomeScreen = ({ navigation }) => {
   const [showFrequencyModal, setShowFrequencyModal] = useState(false);
   const [errors, setErrors] = useState({});
 
+  const token = useSelector((state)=>state.auth.token);
   // Predefined data
   const incomeCategories = [
     { id: "1", name: "Salary", icon: "cash-multiple" },
@@ -96,11 +99,11 @@ const AddIncomeScreen = ({ navigation }) => {
   };
 
   // Handle form submission
-  const handleSubmit = () => {
+  const handleSubmit = async() => {
     if (validateForm()) {
       // Create income object
       const incomeData = {
-        amount: parseFloat(amount),
+        amount: parseInt(amount),
         category,
         date,
         description,
@@ -108,27 +111,27 @@ const AddIncomeScreen = ({ navigation }) => {
         paymentMethod,
         isRecurring,
         frequency: isRecurring ? frequency : null,
-        id: Date.now().toString(), // temporary ID
       };
 
       // Here you would typically save the income to your database or state
       console.log("Income data:", incomeData);
       
-      // Show success message
-      Alert.alert(
-        "Success",
-        "Income added successfully!",
-        [
-          {
-            text: "OK",
-            onPress: () => {
-              // Reset form and navigate back
-              resetForm();
-              navigation?.goBack();
+      const response = await addIncome(incomeData, token);
+      if (response.status === 200) {
+        Alert.alert(
+          "Success",
+          "Income added successfully!",
+          [
+            {
+              text: "OK",
+              onPress: () => {
+                resetForm();
+              },
             },
-          },
-        ]
-      );
+          ]
+        );
+      }
+      
     }
   };
 

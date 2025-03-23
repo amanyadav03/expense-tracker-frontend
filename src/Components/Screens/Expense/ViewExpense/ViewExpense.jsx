@@ -54,6 +54,7 @@ const ViewExpensesScreen = ({ navigation }) => {
     "subscriptions": "refresh",
     "education": "school",
     "personal care": "face-man",
+    "travel":"airplane",
     "other": "dots-horizontal",
   };
 
@@ -104,11 +105,8 @@ const ViewExpensesScreen = ({ navigation }) => {
   // Handle refresh
   const onRefresh = () => {
     setRefreshing(true);
-    // Simulate API call
-    setTimeout(() => {
       fetchExpense();
       setRefreshing(false);
-    }, 1000);
   };
 
   // Handle search

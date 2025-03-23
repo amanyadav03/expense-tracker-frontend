@@ -55,18 +55,14 @@ const Login = ({ navigation }) => {
           userId: decoded.userId,
           mobile: decoded.mobile,
           role: decoded.role,
+          monthlyBudget: decoded.monthlyBudget,
+          name: decoded.name,
 
         }
         dispatch(setToken(payload))
         console.log(decoded);
       }
-      setTimeout(() => {
         setIsLoading(false);
-        // For demo purposes, just show a success message
-        Alert.alert("Success", "Login successful!");
-        // In a real app, you would navigate to the main app screen
-        // navigation.navigate('Home');
-      }, 1500);
     }
   };
 

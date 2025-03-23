@@ -8,6 +8,9 @@ const ENDPOINTS = {
     login: 'login',
     register: 'register',
     expense: 'expense',
+    income: 'income',
+    dashboard: 'dashboard',
+    
 };
 
 export function getEndpoint(microservice, key) {

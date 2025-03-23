@@ -14,6 +14,8 @@ import {
   TouchableWithoutFeedback
 } from "react-native";
 import Icon from "react-native-vector-icons/MaterialCommunityIcons";
+import { getIncome } from "../../../../Services/api";
+import { useSelector } from "react-redux";
 
 const ViewIncomeScreen = ({ navigation }) => {
   // States for income data and UI control
@@ -29,6 +31,7 @@ const ViewIncomeScreen = ({ navigation }) => {
   const [totalIncome, setTotalIncome] = useState(0);
   const [recurringIncome, setRecurringIncome] = useState(0);
 
+  const token = useSelector((state)=>state.auth.token);
   // Animation value for filter button
   const animatedValue = new Animated.Value(0);
   const animatedRotation = animatedValue.interpolate({
@@ -36,131 +39,38 @@ const ViewIncomeScreen = ({ navigation }) => {
     outputRange: ["0deg", "180deg"],
   });
 
-  // Mock data based on the provided format
-  const mockIncomes = [
-    {
-      id: "1",
-      amount: 3500,
-      category: "Salary",
-      date: "2025-03-15T07:38:13.443Z",
-      description: "Monthly salary",
-      source: "ABC Company",
-      paymentMethod: "Bank Transfer",
-      isRecurring: true,
-      frequency: "monthly"
-    },
-    {
-      id: "2",
-      amount: 850,
-      category: "Freelance",
-      date: "2025-03-10T14:22:43.443Z",
-      description: "Website design project",
-      source: "Client XYZ",
-      paymentMethod: "PayPal",
-      isRecurring: false,
-      frequency: null
-    },
-    {
-      id: "3",
-      amount: 200,
-      category: "Investments",
-      date: "2025-03-08T09:15:00.443Z",
-      description: "Dividend payment",
-      source: "Stock Portfolio",
-      paymentMethod: "Bank Transfer",
-      isRecurring: true,
-      frequency: "quarterly"
-    },
-    {
-      id: "4",
-      amount: 1200,
-      category: "Rental",
-      date: "2025-03-05T16:45:22.443Z",
-      description: "Apartment rent",
-      source: "Tenant",
-      paymentMethod: "Bank Transfer",
-      isRecurring: true,
-      frequency: "monthly"
-    },
-    {
-      id: "5",
-      amount: 500,
-      category: "Gifts",
-      date: "2025-03-02T11:30:45.443Z",
-      description: "Birthday gift",
-      source: "Family",
-      paymentMethod: "Cash",
-      isRecurring: false,
-      frequency: null
-    },
-    {
-      id: "6",
-      amount: 75,
-      category: "Refunds",
-      date: "2025-02-28T20:15:10.443Z",
-      description: "Product return",
-      source: "Amazon",
-      paymentMethod: "Credit Card",
-      isRecurring: false,
-      frequency: null
-    },
-    {
-      id: "7",
-      amount: 1500,
-      category: "Business",
-      date: "2025-02-25T13:20:30.443Z",
-      description: "Business profit",
-      source: "Side Business",
-      paymentMethod: "Bank Transfer",
-      isRecurring: false,
-      frequency: null
-    },
-    {
-      id: "8",
-      amount: 300,
-      category: "Side Hustle",
-      date: "2025-02-20T08:10:15.443Z",
-      description: "Tutoring sessions",
-      source: "Student",
-      paymentMethod: "Cash",
-      isRecurring: true,
-      frequency: "weekly"
-    },
-    {
-      id: "9",
-      amount: 50,
-      category: "Other",
-      date: "2025-02-15T15:45:00.443Z",
-      description: "Sold old items",
-      source: "Garage Sale",
-      paymentMethod: "Cash",
-      isRecurring: false,
-      frequency: null
-    },
-    {
-      id: "10",
-      amount: 250,
-      category: "Freelance",
-      date: "2025-02-10T10:30:45.443Z",
-      description: "Logo design",
-      source: "Client ABC",
-      paymentMethod: "PayPal",
-      isRecurring: false,
-      frequency: null
-    },
-  ];
+  const fetchIncome= async()=>{
+    if(!token){
+      setLoading(false);
+      return;
+    }
+    try{
+      const response = await getIncome(token);
+      if(response.status===200){
+      setIncomes(response.data.income);
+      setFilteredIncomes(response.data.income);
+      calculateTotalIncome(response.data.income);
+      }
+    }
+    catch(err){
+      console.error(err);
+    }finally{
+      setLoading(false);
+      setRefreshing(false);
+    }
+  }
 
   // Category icons mapping
   const categoryIcons = {
-    "Salary": "cash-multiple",
-    "Freelance": "laptop",
-    "Investments": "chart-line",
-    "Rental": "home-city",
-    "Gifts": "gift",
-    "Refunds": "cash-refund",
-    "Business": "store",
-    "Side Hustle": "handshake",
-    "Other": "dots-horizontal",
+    "salary": "cash-multiple",
+    "freelance": "laptop",
+    "investments": "chart-line",
+    "rental": "home-city",
+    "gifts": "gift",
+    "refunds": "cash-refund",
+    "business": "store",
+    "side Hustle": "handshake",
+    "other": "dots-horizontal",
   };
 
   // Payment method icons mapping
@@ -175,13 +85,7 @@ const ViewIncomeScreen = ({ navigation }) => {
 
   // Fetch income data
   useEffect(() => {
-    // Simulate API call
-    setTimeout(() => {
-      setIncomes(mockIncomes);
-      setFilteredIncomes(mockIncomes);
-      calculateTotalIncome(mockIncomes);
-      setLoading(false);
-    }, 1000);
+    fetchIncome();
   }, []);
 
   // Calculate total income and recurring income
@@ -198,13 +102,7 @@ const ViewIncomeScreen = ({ navigation }) => {
   // Handle refresh
   const onRefresh = () => {
     setRefreshing(true);
-    // Simulate API call
-    setTimeout(() => {
-      setIncomes(mockIncomes);
-      setFilteredIncomes(mockIncomes);
-      calculateTotalIncome(mockIncomes);
-      setRefreshing(false);
-    }, 1000);
+    fetchIncome();
   };
 
   // Handle search

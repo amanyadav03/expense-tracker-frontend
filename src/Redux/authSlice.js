@@ -7,7 +7,9 @@ const authSlice = createSlice({
     userName: null,
     role: null,
     mobile: null,
-    userId: null
+    userId: null,
+    name: null,
+    monthlyBudget: 0,
   },
   reducers: {
     setToken:(state, action)=>{
@@ -16,6 +18,8 @@ const authSlice = createSlice({
       state.role = action.payload.role;
       state.mobile = action.payload.mobile;
       state.userId = action.payload.userId;
+      state.monthlyBudget = action.payload.monthlyBudget;
+      state.name = action.payload.name;
     },
     removeToken:(state)=>{
       state.token =  null;
@@ -23,6 +27,8 @@ const authSlice = createSlice({
       state.role = null;
       state.mobile = null;
       state.userId = null;
+      state.monthlyBudget = 0;
+      state.name = null;
     }
   },
 });

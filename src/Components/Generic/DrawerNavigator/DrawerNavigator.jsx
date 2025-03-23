@@ -17,13 +17,11 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import AddExpense from "../../Screens/Expense/AddExpense/AddExpense";
 import ExpenseTab from "../../Screens/Expense/ExpenseTabNavigation";
 import IncomeTab from "../../Screens/Income/IncomeTabNavigation";
-import ExpenseHistoryScreen from "../../Screens/ExpenseHistory/ExpenseHistory";
-import IncomeHistoryScreen from "../../Screens/IncomeHistory/IncomeHistory";
 
 function CustomDrawerContent(props) {
     const dispatch = useDispatch();
   const navigation = useNavigation();
-  const userName = useSelector((state)=>state.auth.userName);
+  const userName = useSelector((state)=>state.auth.name);
   const role = useSelector((state)=>state.auth.role);
   const handleLogout = async() => {
     dispatch(removeToken());
@@ -35,15 +33,15 @@ function CustomDrawerContent(props) {
       {/* User Profile Section */}
       <View style={styles.userSection}>
         <Image
-          source={{ uri: "https://via.placeholder.com/80" }}
+          source={require('../../../Assets/Images/user.png')}
           style={styles.userImage}
         />
         <Text style={styles.userName}>{userName}</Text>
         <Text style={styles.userEmail}>{role}</Text>
-        <View style={styles.balanceContainer}>
+        {/* <View style={styles.balanceContainer}>
           <Text style={styles.balanceLabel}>Current Balance</Text>
           <Text style={styles.balanceAmount}>$2,450.50</Text>
-        </View>
+        </View> */}
       </View>
 
       {/* Drawer Items */}
@@ -109,20 +107,7 @@ const DrawerNavigation = () => {
           drawerIcon: ({ color }) => <Icon name="cash-plus" size={22} color={color} />,
         }}
       />
-      <Drawer.Screen
-        name="Expense History"
-        component={ExpenseHistoryScreen}
-        options={{
-          drawerIcon: ({ color }) => <Icon name="cash-minus" size={22} color={color} />,
-        }}
-      />
-      <Drawer.Screen
-        name="Income History"
-        component={IncomeHistoryScreen}
-        options={{
-          drawerIcon: ({ color }) => <Icon name="cash-plus" size={22} color={color} />,
-        }}
-      />
+      
       {/*<Drawer.Screen
         name="Budget"
         component={BudgetScreen}

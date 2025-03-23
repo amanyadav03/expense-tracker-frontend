@@ -1,5 +1,5 @@
 import { CommonActions } from "@react-navigation/native";
-import React from "react";
+import React, { useEffect, useState } from "react";
 import {
   Text,
   View,
@@ -12,6 +12,7 @@ import {
 import { Dimensions } from "react-native";
 import Icon from "react-native-vector-icons/MaterialCommunityIcons";
 import { useSelector } from "react-redux";
+import { getDashboard } from "../../../Services/api";
 
 const screenWidth = Dimensions.get("window").width;
 
@@ -48,13 +49,53 @@ const mockData = {
 };
 
 const HomeComponent = ({navigation}) => {
-    const userName = useSelector((state)=>state.auth.userName);
+
+  const [income, setIncome] = useState(0);
+  const [expense, setExpense] = useState(0);
+  const [categoryExpense, setCategoryExpense] = useState([]);
+
+    const token = useSelector((state)=>state.auth.token);
+    const monthlyBudget = useSelector((state)=>state.auth.monthlyBudget);
+    const userName = useSelector((state)=>state.auth.name);
+
+    useEffect(()=>{
+      fetchDashboard();
+    },[])
+    const fetchDashboard = async()=>{
+      if(!token){
+        return;
+      }
+      try{
+        const response = await getDashboard(token);
+        if(response.status==200){
+          setIncome(response.data.income[0].total);
+          setExpense(response.data.expense[0].total);
+          setCategoryExpense(response.data.expenseByCategory);
+        }
+      }catch(err){
+        console.log(err);
+      }
+    }
   // Calculate percentage of budget used
-  const budgetUsedPercentage = (mockData.expenses / mockData.monthlyBudget) * 100;
+  const budgetUsedPercentage = (expense / monthlyBudget) * 100;
   
+  const categoryIcons = {
+    "utilities": "flash",
+    "food & dining": "food",
+    "housing": "home",
+    "shopping": "shopping",
+    "transportation": "car",
+    "entertainment": "movie",
+    "healthcare": "medical-bag",
+    "subscriptions": "refresh",
+    "education": "school",
+    "personal care": "face-man",
+    "travel":"airplane",
+    "other": "dots-horizontal",
+  };
   // Format currency
   const formatCurrency = (amount) => {
-    return `$${Math.abs(amount).toFixed(2)}`;
+    return `₹${Math.abs(amount)}`;
   };
 
   // Format date
@@ -94,7 +135,7 @@ const HomeComponent = ({navigation}) => {
         </View>
         <TouchableOpacity style={styles.profileButton}>
           <Image
-            source={{ uri: "https://via.placeholder.com/40" }}
+            source={require('../../../Assets/Images/user.png')}
             style={styles.profileImage}
           />
         </TouchableOpacity>
@@ -108,13 +149,13 @@ const HomeComponent = ({navigation}) => {
             <Icon name="dots-horizontal" size={20} color="#FFF" />
           </TouchableOpacity>
         </View>
-        <Text style={styles.balanceAmount}>${mockData.balance.toFixed(2)}</Text>
+        <Text style={styles.balanceAmount}>₹{(income-expense)}</Text>
         <View style={styles.balanceDetails}>
           <View style={styles.balanceItem}>
             <Icon name="arrow-down" size={20} color="#4CAF50" />
             <View>
               <Text style={styles.balanceItemLabel}>Income</Text>
-              <Text style={styles.balanceItemAmount}>${mockData.income.toFixed(2)}</Text>
+              <Text style={styles.balanceItemAmount}>₹{income}</Text>
             </View>
           </View>
           <View style={styles.balanceDivider} />
@@ -122,7 +163,7 @@ const HomeComponent = ({navigation}) => {
             <Icon name="arrow-up" size={20} color="#F44336" />
             <View>
               <Text style={styles.balanceItemLabel}>Expenses</Text>
-              <Text style={styles.balanceItemAmount}>${mockData.expenses.toFixed(2)}</Text>
+              <Text style={styles.balanceItemAmount}>₹{expense}</Text>
             </View>
           </View>
         </View>
@@ -139,10 +180,10 @@ const HomeComponent = ({navigation}) => {
         <View style={styles.budgetContainer}>
           <View style={styles.budgetInfo}>
             <Text style={styles.budgetLabel}>
-              ${mockData.expenses.toFixed(2)} of ${mockData.monthlyBudget.toFixed(2)}
+            ₹{expense} of ₹{monthlyBudget}
             </Text>
             <Text style={styles.budgetPercentage}>
-              {budgetUsedPercentage.toFixed(0)}%
+              {budgetUsedPercentage}%
             </Text>
           </View>
           <View style={styles.progressBarContainer}>
@@ -216,29 +257,18 @@ const HomeComponent = ({navigation}) => {
         </View>
         
         <View style={styles.categoryList}>
-          {mockData.expenseCategories.map((category, index) => (
+          {categoryExpense.map((category, index) => (
             <View key={index} style={styles.categoryItem}>
-              <View style={[styles.categoryIcon, { backgroundColor: category.color + '20' }]}>
-                <Icon name={category.icon} size={20} color={category.color} />
+              <View style={[styles.categoryIcon, { backgroundColor: "#FF6384" + '20' }]}>
+                <Icon name={categoryIcons[category._id]} size={20} color="#FF6384" />
               </View>
               <View style={styles.categoryDetails}>
-                <Text style={styles.categoryName}>{category.name}</Text>
-                <Text style={styles.categoryAmount}>{formatCurrency(category.amount)}</Text>
+                <Text style={styles.categoryName}>{category._id}</Text>
+                <Text style={styles.categoryAmount}>{formatCurrency(category.total)}</Text>
               </View>
             </View>
           ))}
         </View>
-      </View>
-
-      {/* Monthly Spending Trend */}
-      <View style={styles.card}>
-        <View style={styles.cardHeader}>
-          <Text style={styles.cardTitle}>Monthly Spending</Text>
-          <TouchableOpacity>
-            <Text style={styles.viewAll}>More</Text>
-          </TouchableOpacity>
-        </View>
-        
       </View>
 
       {/* Bottom padding */}

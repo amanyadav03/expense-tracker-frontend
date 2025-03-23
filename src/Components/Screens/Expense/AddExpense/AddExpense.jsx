@@ -115,9 +115,7 @@ const AddExpense = ({ navigation }) => {
           {
             text: "OK",
             onPress: () => {
-              // Reset form and navigate back
               resetForm();
-              navigation?.goBack();
             },
           },
         ]);

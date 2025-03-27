@@ -3,6 +3,7 @@ import { createStackNavigator } from "@react-navigation/stack";
 import Login from "../Components/Screens/Login/Login/Login";
 import { useSelector } from "react-redux";
 import DrawerNavigation from "../Components/Generic/DrawerNavigator/DrawerNavigator";
+import RegisterScreen from "../Components/Screens/Login/Register/Register";
 
 const Router = () => {
     const token = useSelector((state) => state.auth.token);
@@ -16,7 +17,10 @@ const Router = () => {
                 {token ? (
                     <Stack.Screen name="drawer" component={DrawerNavigation} />
                 ) : (
-                    <Stack.Screen name="login" component={Login} />
+                    <>
+                    <Stack.Screen name = "login" component={Login} />
+                    <Stack.Screen name = 'register' component={RegisterScreen}/>
+                    </>
                 )}
             </Stack.Navigator>
         // </NavigationContainer>

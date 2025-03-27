@@ -1,4 +1,4 @@
-const uri = 'http://10.23.10.51:3000/';
+const uri = 'http://10.245.204.51:3000/';
 
 const MS = {
     AUTH : `${uri}auth/`

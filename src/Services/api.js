@@ -5,6 +5,10 @@ export function userLogin(payload){
     return axios.post(endpoint.getEndpoint('AUTH', 'login'), payload);
 } 
 
+export function userRegister(payload){
+    return axios.post(endpoint.getEndpoint('AUTH', 'register'), payload )
+}
+
 export function addExpense(payload, token) {
     return axios.post(
         endpoint.getEndpoint('AUTH', 'expense'), payload, {  headers: { 'Authorization': `Bearer ${token}`,} } );
